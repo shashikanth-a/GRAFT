@@ -3169,8 +3169,13 @@ class SampleGRPOTrainer(GRPOTrainer):
                 )
                 is_rh_raw = active_rh_detector(completions_for_rh, prompts=prompts_for_rh, **detector_kwargs)
                 is_rh = [c and r for c, r in zip(candidate, is_rh_raw)]
+                # [llm_monitor] judge P(hack) for confidence-weighted routing (None
+                # for hard flags / other monitors) + judge cost & quality logging.
+                from llm_monitor.hooks import after_detection
+                rh_score = after_detection(self, completions_for_rh, candidate, n_samples, device)
             else:
                 is_rh = [False] * n_det_samples
+                rh_score = None
 
             # Anchor-env tail: never a main-env hack by construction.
             if n_det_samples != n_samples:
@@ -3433,6 +3438,7 @@ class SampleGRPOTrainer(GRPOTrainer):
                 is_verified_retain=output.get("is_verified_retain"),
                 penalty_baseline_raw_rewards=penalty_baseline_raw,
                 cfg=adv_cfg,
+                rh_score=rh_score,
             )
             output["advantages"] = adv_result.advantages
             output["should_filter"] = adv_result.should_filter

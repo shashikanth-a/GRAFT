@@ -384,6 +384,7 @@ def compute_routed_advantages(
     is_verified_retain: Optional[torch.Tensor],
     penalty_baseline_raw_rewards: Optional[torch.Tensor],
     cfg: AdvConfig,
+    rh_score: Optional[torch.Tensor] = None,
 ) -> RoutedAdvantages:
     """Compute the final per-sample advantages (and optional retain advantages).
 
@@ -553,6 +554,25 @@ def compute_routed_advantages(
         if bool(safe.any()):
             torch.testing.assert_close(advantages[safe], advantages_v[safe],
                                        rtol=0, atol=1e-6)
+
+    # ---- [llm_monitor] confidence-weighted routing ----
+    # rh_score = the monitor's P(hack) per sample (0 on coherence rows). Each
+    # routing sample is routed with its own strength p (llm_monitor/soft_routing.py).
+    # This is fractional routing, so it uses the existing two-stream update of
+    # the lambda != 1 path: m rides the retain-weighted-baseline advantage, v
+    # rides the lambda-independent non-flagged-baseline advantage built above
+    # (flags = score >= threshold).
+    if rh_score is not None:
+        assert (cfg.gradient_routing_enabled and cfg.renormalization_mode == "balanced"
+                and cfg.routing_mode == "classic" and cfg.routing_lambda == 1.0), (
+            "confidence-weighted routing requires classic routing, balanced "
+            "renormalization and routing_lambda=1")
+        from llm_monitor.soft_routing import soft_routing
+        a_soft, retain_grad_w, forget_grad_w = soft_routing(
+            raw_rewards, rh_score, G, cfg.kappa_f)
+        sel = (~coh_mask.view(-1, G).all(dim=1)).repeat_interleave(G)
+        advantages_v = advantages.clone()
+        advantages[sel] = a_soft[sel]
 
     # ---- should_filter: coherence samples the update stage drops entirely ----
     # Verifier takes precedence over filter_renorm (mirrors the update stage).

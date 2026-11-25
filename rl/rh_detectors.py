@@ -1447,6 +1447,10 @@ RH_DETECTOR_REGISTRY = {
     "llm_judge": llm_judge,
 }
 
+# [llm_monitor] Countdown-Code LLM judge (P(hack) scores, cached); see llm_monitor/judge.py
+from llm_monitor.judge import llm_judge_countdown
+RH_DETECTOR_REGISTRY["llm_judge_countdown"] = llm_judge_countdown
+
 
 def get_rh_detector(name, **kwargs):
     if name not in RH_DETECTOR_REGISTRY:

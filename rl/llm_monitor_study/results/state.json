@@ -1,0 +1,196 @@
+{
+  "done": {
+    "setup": {
+      "unit_tests": "passed",
+      "excluded": [
+        "test_vllm_mlp_adapter.py",
+        "test_async_server.py",
+        "tests/test_mlp_adapter_equivalence.py::test_adapter_math_equivalence",
+        "tests/test_mlp_adapter_equivalence.py::test_adapter_only_contribution",
+        "tests/test_mlp_adapter_equivalence.py::test_full_model_logits",
+        "tests/test_mlp_adapter_equivalence.py::test_weight_round_trip",
+        "tests/test_training_equivalence.py::test_pps_steering_parity"
+      ]
+    },
+    "priming": {
+      "base_hack_rate": 0.06541666666666666,
+      "base_solve_rate": 0.5679166666666666,
+      "n": 2400,
+      "classes": {
+        "value_backdoor": 68,
+        "constraint_relax": 32,
+        "input_tamper": 46,
+        "other": 11
+      }
+    },
+    "pilot_dn": {
+      "run_dir": "output/llmmon_pilot/llmmon_dn_pilot_s9",
+      "late_hack_rate": 0.33066666666666666,
+      "eyeball": "output/llmmon/pilot_eyeball.md"
+    },
+    "judge": {
+      "model": "qwen/qwen3.8-27b",
+      "prompt_version": "cc-tamper-v1",
+      "threshold": 0.6513896203142943,
+      "test": {
+        "n": 1500,
+        "n_hack": 291,
+        "threshold": 0.6513896203142943,
+        "precision": 0.8700906344410876,
+        "recall": 0.9896907216494846,
+        "fpr": 0.03556658395368073,
+        "auroc": 0.9912142323183227,
+        "per_form": {
+          "test_overwrite": {
+            "n": 234,
+            "recall": 0.9957264957264957,
+            "auroc": 0.993354683180986
+          },
+          "constraint_relax": {
+            "n": 34,
+            "recall": 1.0,
+            "auroc": 0.9873011239235148
+          },
+          "modify_input": {
+            "n": 20,
+            "recall": 1.0,
+            "auroc": 0.9810587262200166
+          },
+          "other": {
+            "n": 3,
+            "recall": 0.3333333333333333,
+            "auroc": 0.9363110008271298
+          }
+        }
+      }
+    },
+    "pilot_rule": {
+      "run_dir": "output/llmmon_pilot/llmmon_rule_pilot_s9",
+      "deployed_hack_rate": 0.052,
+      "both_hack_rate": 0.3073333333333333
+    },
+    "full": {
+      "arms": [
+        "dn",
+        "rule",
+        "oracle",
+        "judge",
+        "judge_soft"
+      ],
+      "seeds": [
+        9,
+        15
+      ]
+    },
+    "report": {
+      "report": "REPORT.md"
+    }
+  },
+  "spend": [
+    {
+      "phase": "pilot",
+      "label": "setup (failed)",
+      "hours": 0.059,
+      "usd": 0.31
+    },
+    {
+      "phase": "pilot",
+      "label": "setup (failed)",
+      "hours": 0.017,
+      "usd": 0.09
+    },
+    {
+      "phase": "pilot",
+      "label": "setup",
+      "hours": 0.014,
+      "usd": 0.07
+    },
+    {
+      "phase": "pilot",
+      "label": "priming",
+      "hours": 3.012,
+      "usd": 15.93
+    },
+    {
+      "phase": "pilot",
+      "label": "dn_s9",
+      "hours": 0.803,
+      "usd": 4.25
+    },
+    {
+      "phase": "pilot",
+      "label": "judge",
+      "hours": 0.002,
+      "usd": 0.01
+    },
+    {
+      "phase": "full",
+      "label": "dn_s9",
+      "hours": 2.361,
+      "usd": 12.49
+    },
+    {
+      "phase": "full",
+      "label": "rule_s9",
+      "hours": 3.253,
+      "usd": 17.21
+    },
+    {
+      "phase": "full",
+      "label": "oracle_s9",
+      "hours": 3.332,
+      "usd": 17.62
+    },
+    {
+      "phase": "full",
+      "label": "judge_s9",
+      "hours": 3.458,
+      "usd": 31.5
+    },
+    {
+      "phase": "full",
+      "label": "judge_soft_s9",
+      "hours": 4.196,
+      "usd": 35.55
+    },
+    {
+      "phase": "full",
+      "label": "dn_s15",
+      "hours": 2.514,
+      "usd": 13.3
+    },
+    {
+      "phase": "full",
+      "label": "rule_s15",
+      "hours": 3.189,
+      "usd": 16.87
+    },
+    {
+      "phase": "full",
+      "label": "oracle_s15",
+      "hours": 3.086,
+      "usd": 16.33
+    },
+    {
+      "phase": "full",
+      "label": "judge_s15",
+      "hours": 3.23,
+      "usd": 29.3
+    },
+    {
+      "phase": "full",
+      "label": "judge_soft_s15",
+      "hours": 4.065,
+      "usd": 33.89
+    },
+    {
+      "phase": "full",
+      "label": "fseval",
+      "hours": 2.354,
+      "usd": 13.02
+    }
+  ],
+  "git_commit": "6da923dc462342cc55347d8a84c23f5407da4096",
+  "git_dirty": true,
+  "usd_per_step": 0.07083333333333333
+}

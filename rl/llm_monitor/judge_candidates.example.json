@@ -1,0 +1,26 @@
+[
+  {
+    "model": "<strong API model id>",
+    "base_url": "https://openrouter.ai/api/v1",
+    "api_key_env": "OPENROUTER_API_KEY",
+    "prompt_version": "cc-gt-v1",
+    "score_mode": "logprobs",
+    "include_reasoning": false,
+    "max_submission_chars": 8000,
+    "concurrency": 64,
+    "price_in_per_mtok": 0.0,
+    "price_out_per_mtok": 0.0
+  },
+  {
+    "model": "<open-weights model id>",
+    "base_url": "https://openrouter.ai/api/v1",
+    "api_key_env": "OPENROUTER_API_KEY",
+    "prompt_version": "cc-gt-v1",
+    "score_mode": "logprobs",
+    "include_reasoning": false,
+    "max_submission_chars": 8000,
+    "concurrency": 64,
+    "price_in_per_mtok": 0.0,
+    "price_out_per_mtok": 0.0
+  }
+]
